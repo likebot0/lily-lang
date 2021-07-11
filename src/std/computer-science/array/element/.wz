@@ -1,0 +1,16 @@
+fun input: [
+	array: _
+	index: _
+] {
+	!if index < 0, {
+		: fail RangeError
+	}
+
+	!if index >= ./size array, {
+		: fail RangeError
+	}
+
+	!let address: ./base-address array
+
+	!return ~/memory/read $ address + index
+}

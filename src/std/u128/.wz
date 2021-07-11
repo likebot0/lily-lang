@@ -1,0 +1,5 @@
+new-type number {
+    min: ./min
+    max: ./max
+    step: 1
+}

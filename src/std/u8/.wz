@@ -1,0 +1,6 @@
+new-qualifer {
+    for: number
+    min: ./min
+    max: ./max
+    step: 1
+}

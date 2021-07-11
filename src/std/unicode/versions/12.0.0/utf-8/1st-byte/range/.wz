@@ -1,0 +1,67 @@
+fun input {
+	utf-8: ~/unicode/utf-8
+
+	!if x < 0x00, {
+		!return false
+	}
+
+	!if x < 0x80, {
+		: assert x in utf-8/u+000000..u+00007F/1st-byte/range
+
+		!return true
+	}
+
+	!if x < 0xC2, {
+		!return false
+	}
+
+	!if x < 0xE0, {
+		: assert x in utf-8/u+000080..u+0007ff/1st-byte/range
+
+		!return true
+	}
+
+	!if x = 0xE0, {
+		: assert x in utf-8/u+000800..u+000fff/1st-byte/range
+
+		!return true
+	}
+
+	!if x < 0xED, {
+		: assert x in utf-8/u+001000..u+00cfff/1st-byte/range
+
+		!return true
+	}
+
+	!if x = 0xED, {
+		: assert x in utf-8/u+00d000..u+00d7ff/1st-byte/range
+
+		!return true
+	}
+
+	!if x < 0xF0, {
+		: assert x in utf-8/u+00e000..u+00ffff/1st-byte/range
+
+		!return true
+	}
+
+	!if x = 0xF0, {
+		: assert x in utf-8/u+010000..u+03ffff/1st-byte/range
+
+		!return true
+	}
+
+	!if x < 0xF4, {
+		: assert x in utf-8/u+040000..u+0fffff/1st-byte/range
+
+		!return true
+	}
+
+	!if x = 0xF4, {
+		: assert x in utf-8/u+100000..u+10ffff/1st-byte/range
+
+		!return true
+	}
+
+	!return false
+}

@@ -1,0 +1,227 @@
+fun input {
+	\let xs: [ 1, 2, 4, 8 ]
+
+	: static-do {
+		: /std/assert $ type xs 'is-subtype-of type [ number; _ ]
+
+		: /std/assert $ type xs 'is-subtype-of type [ 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; _ ]
+
+		: /std/assert $ type xs = type [ 1, 2, 4, 8 ]
+	}
+
+	\let ys: the [ u8 _; _ ] [ u8 1, u8 2, u8 4, u8 8 ]
+
+	: static-do {
+		: /std/assert $ type ys 'is-subtype-of type [ u8 _; _ ]
+
+		: /std/assert $ type ys 'is-subtype-of type [ u8 $ 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; _ ]
+
+		: /std/assert $ type ys = type [ u8 1, u8 2, u8 4, u8 8 ]
+	}
+
+	: /std/echo "Welcome!"
+
+	\let user: {
+		name: /std/prompt "Enter your name: "
+
+		: /std/echo "Hello fun (name)."
+
+		email: /std/prompt "Enter your email: "
+	}
+
+	\with context {
+		/std/fs/file/ro-handle: /c { bind: "FILE *", source: "#include <stdio.h>" }
+
+		/std/fs/file/rw-handle: /c { bind: "FILE *", source: "#include <stdio.h>" }
+
+		/std/fs/file/wo-handle: /c { bind: "FILE *", source: "#include <stdio.h>" }
+
+		/std/fs/file/open: fun x {
+			\return /c { bind: "fopen", source: "#include <stdio.h>" } [
+				x "path"
+			]
+		}
+
+		/std/fs/file/write: fun x {
+			\return /c { bind: "fwrite", source: "#include <stdio.h>" } [
+				x "handle"
+				x "buffer"
+			]
+		}
+	}
+
+	\with context {
+		\let malloc:
+			/c { bind: "malloc", source: "#include <stdlib.h>" }
+
+		\let free:
+			/c { bind: "free", source: "#include <stdlib.h>" }
+
+		/std/memory/pointer:
+			forall a. /c { bind-pointer: a }
+
+		/std/memory/allocate: fun n {
+			\return malloc [ n ]
+		}
+
+		/std/memory/deallocate: fun ptr {
+			\return free [ ptr ]
+		}
+
+		/std/memory/dereference: fun ptr {
+			\return /c/dereference ptr
+		}
+	}
+
+	\with context {
+		/std/ref/.d: forall a. some (forall k. k <: /std/keys a. k -> a k)
+
+		/std/ref: forall a. {
+			data: {
+				data: /std/memory/pointer a
+				use-count: /std/memory/pointer /std/usize
+			}
+			apply: forall k. k: /std/keys a. k -> a k
+		}
+
+		/std/ref/new: fun x {
+			\return {
+				data: {
+					data: /std/memory/allocate x
+					use-count: /std/memory/allocate $ /std/usize 1
+				}
+				apply: fun x {
+					
+				}
+			}
+		}
+	}
+
+	\with context {
+		/std/kernel-thread/handle: forall a. {
+		}
+
+		/std/kernel-thread/await: fun handles {
+		}
+
+		/std/kernel-thread/spawn: fun action {
+		}
+	}
+
+	\with context {
+		\let main-loop: fun _ {
+			: repeat {
+				\let user-thread-ref: /std/list/dequeue {
+					list: user-thread-queue
+				}
+
+				: user-thread-ref {}
+			}
+		}
+
+		\let user-thread: closure {
+			input: {}
+			output: {}
+			required: {}
+		}
+
+		\let user-thread-queue: /std/blocking/list/empty user-thread
+
+		/std/user-thread/handle: type {
+			listeners: /std/blocking/list user-thread
+			result-ref: /std/ref a
+		}
+
+		/std/user-thread/await: fun handles {
+			: fun unmanaged-return-as k {
+				\let return-ref: /std/ref/new k
+
+				\let count-ref: /std/ref/new $ /std/atomic/uintegral $ count handles
+
+				\for h: handles, {
+					: /std/list/enqueue {
+						list: h "listeners"
+						value: /std/ref/new fun _ {
+							\let count: /std/ref/decrement $ count-ref
+
+							\if count /= 0, {
+								\return {}
+							}
+
+							: /std/list/enqueue {
+								list: user-thread-queue
+								value: /std/ref/new fun _ {
+									: /std/ref/call return-ref {
+										\for k: handles, {
+											
+										}
+										: [k]: /std/ref/dereference $ x "result-ref"
+									}
+								}
+							}
+						}
+					}
+				}
+
+				: main-loop {}
+			}
+		}
+
+		/std/user-thread/spawn: fun action {
+			\let handle: {
+				listeners: /std/blocking/list/empty
+				result-ref: /std/ref/null $ /std/fun/result-type action
+			}
+
+			: /std/list/enqueue {
+				list: user-thread-queue
+				value: /std/ref/new fun _ {
+					: /std/ref/init {
+						ref: handle "result-ref"
+						value: action {}
+					}
+
+					\for l: handle "listeners", {
+						: l {}
+					}
+				}
+			}
+
+			\return handle
+		}
+
+		/std/user-thread/implements: fun action {
+			\let x: spawn action
+
+			\for _: range 0 4, {
+				: /std/kernel-thread/spawn {
+					action: main-loop
+					detach: true
+				}
+			}
+
+			: /std/user-thread/await x
+		}
+	}
+
+	\with /std/user-thread/implements
+
+	\let x: await {
+		a: spawn fun _ {
+			: /std/sleep 1000
+
+			: /std/echo "Awake!"
+
+			\return 1
+		}
+		b: spawn fun _ {
+			: /std/sleep 2000
+
+			: /std/echo "Awake!"
+
+			\return 0
+		}
+	}
+
+	\return 0
+}

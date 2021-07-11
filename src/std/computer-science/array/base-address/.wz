@@ -1,0 +1,7 @@
+fun array: ~/array.infer {
+	!return array/base-address
+}
+
+fun array: ~/null-terminated-string.infer {
+	!return array/base-address
+}

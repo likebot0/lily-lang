@@ -1,0 +1,16 @@
+fun-type {
+	input: {
+		path:
+			string
+		access-mode:
+			~/fs/directory/access-mode
+	}
+	output: input "access-mode" |> {
+		read-only:
+			~/fs/directory/ro-handle
+		read-write:
+			~/fs/directory/rw-handle
+		write-only:
+			~/fs/directory/wo-handle
+	}
+}

@@ -1,0 +1,20 @@
+fun [
+	array: ~/array.type
+] {
+	!return array/size
+}
+
+fun [
+	array: ~/null-terminated-string.type
+] {
+	!let i: ~/count { from: 0 }
+
+	!let x: ./array/element {
+		array: array
+		index: i
+	}
+
+	!if x = 0, {
+		!return i
+	}
+}

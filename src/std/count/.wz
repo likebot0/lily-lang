@@ -1,0 +1,12 @@
+fun _ {
+	from: _
+} {
+	!let i: /index $ state/from | 0
+
+	!let x: /context/resume i
+
+	: /assign {
+		reference: i
+		value: i + 1
+	}
+}

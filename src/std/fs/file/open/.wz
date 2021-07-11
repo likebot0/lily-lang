@@ -1,0 +1,10 @@
+fun _ {
+	input: {
+		handle:
+			~/fs/file/readble-handle
+		buffer:
+			~/io/buffer | [~/io/buffer, ...]
+	}
+	return:
+		size
+}

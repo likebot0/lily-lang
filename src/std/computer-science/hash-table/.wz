@@ -1,0 +1,5 @@
+{
+	buckets: [null | ./bucket, ...]
+	hash-function: any
+	size: any
+}

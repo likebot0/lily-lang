@@ -1,0 +1,36 @@
+fun x: ~/array
+{
+	!let i: ./sequential $ ~/range {
+		from: 0
+		to: ~/array/size f
+	}
+
+	: resume ~/array/element {
+		array: list
+		index: i
+	}
+}
+
+fun x: ~/null-terminated-string
+{
+	!let i: ./sequential $ ~/range {
+		from: 0
+		to: /built-in/max-size
+	}
+
+	!let x: ~/array/element {
+		array: list
+		index: i
+	}
+
+	!if x = 0, {
+		!return []
+	}
+
+	: resume x
+}
+
+fun x: ~/range
+{
+	!return x
+}

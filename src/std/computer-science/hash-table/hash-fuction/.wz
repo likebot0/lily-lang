@@ -1,0 +1,5 @@
+funinput: [
+	hash-table: ~/hash-table.type
+] {
+	!return hash-table/hash-function
+}

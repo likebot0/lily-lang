@@ -1,0 +1,1194 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "waltz",
+	"scopeName": "source.waltz",
+	"patterns": [
+		{
+			"include": "#root"
+		}
+	],
+	"repository": {
+		"root": {
+			"patterns": [
+				{
+					"include": "#root/statement"
+				},
+				{
+					"include": "#root/expression"
+				},
+				{
+					"include": "#separator"
+				},
+				{
+					"include": "#ignored"
+				}
+			]
+		},
+		"root/expression": {
+			"begin": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+			"end": "(?=[\r\n#,])",
+			"patterns": [
+				{
+					"include": "#expression/term"
+				},
+				{
+					"include": "#ignored"
+				}
+			]
+		},
+		"root/statement": {
+			"patterns": [
+				{
+					"include": "#statement/base"
+				}
+			]
+		},
+		"curly-brackets/body": {
+			"patterns": [
+				{
+					"include": "#curly-brackets/discard"
+				},
+				{
+					"include": "#curly-brackets/statement"
+				},
+				{
+					"include": "#separator"
+				},
+				{
+					"include": "#ignored"
+				}
+			]
+		},
+		"curly-brackets/discard": {
+			"begin": "(?=:)",
+			"end": "(?=[\r\n#,\\}])",
+			"patterns": [
+				{
+					"begin": ":",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.separator.label"
+						}
+					},
+					"end": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+					"patterns": [
+						{
+							"include": "#ignored"
+						}
+					]
+				},
+				{
+					"include": "#expression/for-curly-brackets"
+				}
+			]
+		},
+		"curly-brackets/key-value": {
+			"begin": "(?=[^\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+			"end": "(?=[\r\n#,\\}])",
+			"patterns": [
+				{
+					"begin": "(?=[^\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+					"end": "(?=:)",
+					"patterns": [
+						{
+							"include": "#identifier"
+						},
+						{
+							"begin": "(?=.)",
+							"end": "(?=:)",
+							"patterns": [
+								{
+									"include": "#ignored"
+								}
+							]
+						}
+					]
+				},
+				{
+					"include": "#curly-brackets/discard"
+				}
+			]
+		},
+		"curly-brackets/statement": {
+			"begin": "(?=\\\\)",
+			"end": "(?=[\r\n#,\\}])",
+			"patterns": [
+				{
+					"begin": "(?=\\\\call-with-current-continuation[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+					"end": "(?=[\r\n#,\\}])",
+					"patterns": [
+						{
+							"begin": "\\\\call-with-current-continuation",
+							"beginCaptures": {
+								"0": {
+									"name": "keyword.control"
+								}
+							},
+							"end": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+							"patterns": [
+								{
+									"include": "#ignored"
+								}
+							]
+						},
+						{
+							"include": "#expression/for-curly-brackets"
+						}
+					]
+				},
+				{
+					"begin": "(?=\\\\include[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+					"end": "(?=[\r\n#,\\}])",
+					"patterns": [
+						{
+							"begin": "\\\\include",
+							"beginCaptures": {
+								"0": {
+									"name": "keyword.control"
+								}
+							},
+							"end": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+							"patterns": [
+								{
+									"include": "#ignored"
+								}
+							]
+						},
+						{
+							"include": "#expression/for-curly-brackets"
+						}
+					]
+				},
+				{
+					"begin": "(?=\\\\with[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+					"end": "(?=[\r\n#,\\}])",
+					"patterns": [
+						{
+							"begin": "\\\\with",
+							"beginCaptures": {
+								"0": {
+									"name": "keyword.control"
+								}
+							},
+							"end": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+							"patterns": [
+								{
+									"include": "#ignored"
+								}
+							]
+						},
+						{
+							"include": "#expression/for-curly-brackets"
+						}
+					]
+				},
+				{
+					"begin": "(?=\\\\let[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+					"end": "(?=[\r\n#,\\}])",
+					"patterns": [
+						{
+							"begin": "\\\\let",
+							"beginCaptures": {
+								"0": {
+									"name": "keyword.control"
+								}
+							},
+							"end": "(?=[^\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+							"patterns": [
+								{
+									"include": "#ignored"
+								}
+							]
+						},
+						{
+							"include": "#curly-brackets/key-value"
+						}
+					]
+				},
+				{
+					"begin": "(?=\\\\return[\\\\: \t\r\n#,;\\(\\)\\[\\]\\{\\}])",
+					"end": "(?=[\r\n#,\\}])",
+					"patterns": [
+						{
+							"begin": "\\\\return",
+							"beginCaptures": {
+								"0": {
+									"name": "keyword.control"
+								}
+							},
+							"end": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+							"patterns": [
+								{
+									"include": "#ignored"
+								}
+							]
+						},
+						{
+							"include": "#expression/for-curly-brackets"
+						}
+					]
+				},
+				{
+					"include": "#statement/forall"
+				},
+				{
+					"include": "#statement/if"
+				},
+				{
+					"include": "#statement/with"
+				},
+				{
+					"begin": "(?=.)",
+					"end": "(?=[\r\n#,\\}])",
+					"patterns": [
+						{
+							"include": "#ignored"
+						}
+					]
+				}
+			]
+		},
+		"binary-operator": {
+			"begin": "(?<=[^\r\n])(?:[\\+\\-\\*/%^=<>\\&\\|\\$]+|'.+?)(?=[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+			"beginCaptures": {
+				"0": {
+					"patterns": [
+						{
+							"match": ".+",
+							"name": "keyword.operator.binary"
+						}
+					]
+				}
+			},
+			"end": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+			"patterns": [
+				{
+					"include": "#ignored"
+				}
+			]
+		},
+		"block-expression": {
+			"begin": "(?=(?:static-)?(?:do|repeat)[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.other"
+				}
+			},
+			"end": "\\}",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.brackets.curly.end"
+				}
+			},
+			"patterns": [
+				{
+					"begin": "(?:static-)?(?:do|repeat)",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.other"
+						}
+					},
+					"end": "(?=\\{)",
+					"patterns": [
+						{
+							"include": "#ignored"
+						}
+					]
+				},
+				{
+					"begin": "\\{",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.brackets.square.begin"
+						}
+					},
+					"end": "(?=\\})",
+					"patterns": [
+						{
+							"include": "#curly-brackets/body"
+						}
+					]
+				}
+			]
+		},
+		"comment": {
+			"match": "#+",
+			"name": "comment.line.number-sign"
+		},
+		"expression/for-curly-brackets": {
+			"begin": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+			"end": "(?=[\r\n#,\\}])",
+			"patterns": [
+				{
+					"include": "#expression/term"
+				},
+				{
+					"include": "#ignored"
+				}
+			]
+		},
+		"expression/for-round-brackets": {
+			"begin": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+			"end": "(?=\\))",
+			"patterns": [
+				{
+					"begin": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+					"end": "(?=[\r\n#\\)])",
+					"patterns": [
+						{
+							"include": "#expression/term"
+						},
+						{
+							"include": "#ignored"
+						}
+					]
+				},
+				{
+					"begin": "(?=.)",
+					"end": "(?=\\))",
+					"patterns": [
+						{
+							"include": "#ignored"
+						}
+					]
+				}
+			]
+		},
+		"expression/for-square-brackets": {
+			"begin": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+			"end": "(?=[\r\n#,\\]])",
+			"patterns": [
+				{
+					"include": "#expression/term"
+				},
+				{
+					"include": "#ignored"
+				}
+			]
+		},
+		"expression/term": {
+			"patterns": [
+				{
+					"include": "#binary-operator"
+				},
+				{
+					"include": "#block-expression"
+				},
+				{
+					"include": "#grouped-expression"
+				},
+				{
+					"include": "#lambda-expression"
+				},
+				{
+					"include": "#literal/array"
+				},
+				{
+					"include": "#literal/context"
+				},
+				{
+					"include": "#literal/number/bin"
+				},
+				{
+					"include": "#literal/number/oct"
+				},
+				{
+					"include": "#literal/number/hex"
+				},
+				{
+					"include": "#literal/number/dec"
+				},
+				{
+					"include": "#literal/object"
+				},
+				{
+					"include": "#literal/string"
+				},
+				{
+					"begin": "(?:nonimal-)?type(?=[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.other"
+						}
+					},
+					"end": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+					"patterns": [
+						{
+							"include": "#ignored"
+						}
+					]
+				},
+				{
+					"include": "#identifier"
+				}
+			]
+		},
+		"grouped-expression": {
+			"begin": "\\(",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.brackets.round.begin"
+				}
+			},
+			"end": "\\)",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.brackets.round.end"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#expression/for-round-brackets"
+				},
+				{
+					"include": "#ignored"
+				}
+			]
+		},
+		"identifier": {
+			"match": "[^\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}]+",
+			"captures": {
+				"0": {
+					"patterns": [
+						{
+							"match": "_$",
+							"name": "variable.language.unused"
+						},
+						{
+							"match": "null$",
+							"name": "variable.language.null"
+						},
+						{
+							"match": "true$",
+							"name": "variable.language.true"
+						},
+						{
+							"match": "false$",
+							"name": "variable.language.false"
+						},
+						{
+							"match": "infer$",
+							"name": "variable.language.infer"
+						},
+						{
+							"match": "the$",
+							"name": "variable.language.the"
+						},
+						{
+							"match": "not$",
+							"name": "variable.language.not"
+						},
+						{
+							"match": "\\+$",
+							"name": "variable.language.plus"
+						},
+						{
+							"match": "\\-$",
+							"name": "variable.language.minus"
+						},
+						{
+							"match": "spawn$",
+							"name": "variable.language.spawn"
+						},
+						{
+							"match": "await$",
+							"name": "variable.language.await"
+						},
+						{
+							"match": "boolean$",
+							"name": "variable.language.boolean"
+						},
+						{
+							"match": "number$",
+							"name": "variable.language.number"
+						},
+						{
+							"match": "string$",
+							"name": "variable.language.string"
+						},
+						{
+							"match": "size$",
+							"name": "variable.language.size"
+						},
+						{
+							"match": "[ui](?:8|16|32|64)$",
+							"name": "variable.language"
+						},
+						{
+							"match": ".keys$",
+							"name": "variable.language.object.keys"
+						},
+						{
+							"match": ".values$",
+							"name": "variable.language.object.values"
+						},
+						{
+							"match": "Type$",
+							"name": "variable.language.Type"
+						},
+						{
+							"match": ".+$",
+							"name": "entity.name"
+						}
+					]
+				}
+			}
+		},
+		"ignored": {
+			"patterns": [
+				{
+					"include": "#comment"
+				},
+				{
+					"match": "[^ \t\r\n]",
+					"name": "invalid.illegal"
+				}
+			]
+		},
+		"lambda-expression": {
+			"begin": "fun(?=[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.other"
+				}
+			},
+			"end": "\\}",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.brackets.curly.end"
+				}
+			},
+			"patterns": [
+				{
+					"begin": "(?=[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+					"end": "(?=[^\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+					"patterns": [
+						{
+							"include": "#ignored"
+						}
+					]
+				},
+				{
+					"begin": "(?=[^\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+					"end": "(?=\\})",
+					"patterns": [
+						{
+							"begin": "(?=[^\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+							"end": "(?=\\{)",
+							"patterns": [
+								{
+									"include": "#identifier"
+								},
+								{
+									"begin": "(?=[^\\{])",
+									"end": "(?=\\{)",
+									"patterns": [
+										{
+											"include": "#ignored"
+										}
+									]
+								}
+							]
+						},
+						{
+							"begin": "\\{",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.brackets.square.begin"
+								}
+							},
+							"end": "(?=\\})",
+							"patterns": [
+								{
+									"include": "#curly-brackets/body"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"literal/array": {
+			"begin": "\\[",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.brackets.square.begin"
+				}
+			},
+			"end": "\\]",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.brackets.square.end"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#literal/array/discard"
+				},
+				{
+					"include": "#literal/array/element"
+				},
+				{
+					"include": "#literal/array/statement"
+				},
+				{
+					"include": "#separator"
+				},
+				{
+					"include": "#ignored"
+				}
+			]
+		},
+		"literal/array/discard": {
+			"begin": "(?=:)",
+			"end": "(?=[\r\n#,\\]])",
+			"patterns": [
+				{
+					"begin": ":",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.separator.label"
+						}
+					},
+					"end": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+					"patterns": [
+						{
+							"include": "#ignored"
+						}
+					]
+				},
+				{
+					"include": "#expression/for-square-brackets"
+				}
+			]
+		},
+		"literal/array/element": {
+			"begin": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+			"end": "(?=[\r\n#,\\]])",
+			"patterns": [
+				{
+					"include": "#expression/term"
+				},
+				{
+					"begin": ";",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.separator"
+						}
+					},
+					"end": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+					"patterns": [
+						{
+							"include": "#ignored"
+						}
+					]
+				}
+			]
+		},
+		"literal/array/statement": {
+			"begin": "(?=\\\\)",
+			"end": "(?=[\r\n#,\\]])",
+			"patterns": [
+				{
+					"begin": "(?=\\\\call-with-current-continuation[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+					"end": "(?=[\r\n#,\\]])",
+					"patterns": [
+						{
+							"begin": "\\\\call-with-current-continuation",
+							"beginCaptures": {
+								"0": {
+									"name": "keyword.control"
+								}
+							},
+							"end": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+							"patterns": [
+								{
+									"include": "#ignored"
+								}
+							]
+						},
+						{
+							"include": "#expression/for-square-brackets"
+						}
+					]
+				},
+				{
+					"begin": "(?=\\\\include[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+					"end": "(?=[\r\n#,\\]])",
+					"patterns": [
+						{
+							"begin": "\\\\include",
+							"beginCaptures": {
+								"0": {
+									"name": "keyword.control"
+								}
+							},
+							"end": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+							"patterns": [
+								{
+									"include": "#ignored"
+								}
+							]
+						},
+						{
+							"include": "#expression/for-square-brackets"
+						}
+					]
+				},
+				{
+					"begin": "(?=\\\\with[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+					"end": "(?=[\r\n#,\\]])",
+					"patterns": [
+						{
+							"begin": "\\\\with",
+							"beginCaptures": {
+								"0": {
+									"name": "keyword.control"
+								}
+							},
+							"end": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+							"patterns": [
+								{
+									"include": "#ignored"
+								}
+							]
+						},
+						{
+							"include": "#expression/for-square-brackets"
+						}
+					]
+				},
+				{
+					"begin": "(?=\\\\let[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+					"end": "(?=[\r\n#,\\]])",
+					"patterns": [
+						{
+							"begin": "\\\\let",
+							"beginCaptures": {
+								"0": {
+									"name": "keyword.control"
+								}
+							},
+							"end": "(?=[^\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+							"patterns": [
+								{
+									"include": "#ignored"
+								}
+							]
+						},
+						{
+							"begin": "(?=[^\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+							"end": "(?=:)",
+							"patterns": [
+								{
+									"include": "#identifier"
+								},
+								{
+									"begin": "(?=.)",
+									"end": "(?=:)",
+									"patterns": [
+										{
+											"include": "#ignored"
+										}
+									]
+								}
+							]
+						},
+						{
+							"include": "#literal/array/discard"
+						}
+					]
+				},
+				{
+					"begin": "(?=\\\\return[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+					"end": "(?=[\r\n#,\\]])",
+					"patterns": [
+						{
+							"begin": "\\\\return",
+							"beginCaptures": {
+								"0": {
+									"name": "keyword.control"
+								}
+							},
+							"end": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+							"patterns": [
+								{
+									"include": "#ignored"
+								}
+							]
+						},
+						{
+							"include": "#expression/for-square-brackets"
+						}
+					]
+				},
+				{
+					"include": "#statement/forall"
+				},
+				{
+					"include": "#statement/if"
+				},
+				{
+					"include": "#statement/with"
+				},
+				{
+					"begin": "(?=.)",
+					"end": "(?=[\r\n#,\\]])",
+					"patterns": [
+						{
+							"include": "#ignored"
+						}
+					]
+				}
+			]
+		},
+		"literal/context": {
+			"begin": "(?=context[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+			"end": "\\}",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.brackets.curly.end"
+				}
+			},
+			"patterns": [
+				{
+					"begin": "context(?=[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.other"
+						}
+					},
+					"end": "(?=\\{)",
+					"patterns": [
+						{
+							"include": "#ignored"
+						}
+					]
+				},
+				{
+					"begin": "\\{",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.brackets.curly.begin"
+						}
+					},
+					"end": "(?=\\})",
+					"patterns": [
+						{
+							"include": "#curly-brackets/key-value"
+						},
+						{
+							"include": "#curly-brackets/body"
+						}
+					]
+				}
+			]
+		},
+		"literal/number/bin": {
+			"match": "0b[0-1]+",
+			"name": "constant.numeric"
+		},
+		"literal/number/oct": {
+			"match": "0o[0-7]+",
+			"name": "constant.numeric"
+		},
+		"literal/number/dec": {
+			"match": "[0-9]+",
+			"name": "constant.numeric"
+		},
+		"literal/number/hex": {
+			"match": "0x[0-9A-Fa-f]+",
+			"name": "constant.numeric"
+		},
+		"literal/object": {
+			"begin": "\\{",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.brackets.curly.begin"
+				}
+			},
+			"end": "\\}",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.brackets.curly.end"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#curly-brackets/key-value"
+				},
+				{
+					"include": "#curly-brackets/body"
+				}
+			]
+		},
+		"literal/string": {
+			"name": "string.quoted.double",
+			"begin": "\"",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.begin"
+				}
+			},
+			"end": "\"",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.end"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#literal/string/char-escape"
+				},
+				{
+					"include": "#literal/string/unicode-escape"
+				},
+				{
+					"include": "#literal/string/interpolation"
+				},
+				{
+					"match": "\\\\(.)",
+					"name": "constant.character.escape",
+					"captures": {
+						"1": {
+							"name": "invalid.illegal"
+						}
+					}
+				}
+			]
+		},
+		"literal/string/char-escape": {
+			"match": "\\\\(?:\\\\|\"|n|r|t)",
+			"name": "constant.character.escape"
+		},
+		"literal/string/unicode-escape": {
+			"match": "\\\\(u\\{[0-9A-Fa-f]{1,6}\\})",
+			"name": "constant.character.escape"
+		},
+		"literal/string/interpolation": {
+			"begin": "\\\\\\(",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.brackets.round.begin"
+				}
+			},
+			"end": "\\)",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.brackets.round.end"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#expression/for-round-brackets"
+				},
+				{
+					"include": "#ignored"
+				}
+			]
+		},
+		"separator": {
+			"match": ",",
+			"name": "punctuation.separator.comma"
+		},
+		"statement/base": {
+			"begin": "(?=\\\\base[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+			"end": "(?=[\r\n#,])",
+			"patterns": [
+				{
+					"begin": "\\\\base",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.control"
+						}
+					},
+					"end": "(?=[^\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+					"patterns": [
+						{
+							"include": "#ignored"
+						}
+					]
+				},
+				{
+					"begin": "(?=[^\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+					"end": "(?=[\r\n#,])",
+					"patterns": [
+						{
+							"include": "#identifier"
+						},
+						{
+							"begin": "(?=.)",
+							"end": "(?=[\r\n#,])",
+							"patterns": [
+								{
+									"include": "#ignored"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"statement/forall": {
+			"begin": "(?=\\\\for[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+			"end": "\\}",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.brackets.curly.end"
+				}
+			},
+			"patterns": [
+				{
+					"begin": "(?=\\\\for)",
+					"end": "(?=[\r\n#,])",
+					"patterns": [
+						{
+							"begin": "\\\\for",
+							"beginCaptures": {
+								"0": {
+									"name": "keyword.control"
+								}
+							},
+							"end": "(?=[^\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+							"patterns": [
+								{
+									"include": "#ignored"
+								}
+							]
+						},
+						{
+							"begin": "(?=[^\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+							"end": "(?=:)",
+							"patterns": [
+								{
+									"include": "#identifier"
+								},
+								{
+									"begin": "(?=.)",
+									"end": "(?=:)",
+									"patterns": [
+										{
+											"include": "#ignored"
+										}
+									]
+								}
+							]
+						},
+						{
+							"begin": ":",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.separator.label"
+								}
+							},
+							"end": "(?=[\r\n#,])",
+							"patterns": [
+								{
+									"include": "#expression/term"
+								},
+								{
+									"include": "#ignored"
+								}
+							]
+						}
+					]
+				},
+				{
+					"begin": "(?=[\r\n#,])",
+					"end": "(?=\\{)",
+					"patterns": [
+						{
+							"include": "#separator"
+						},
+						{
+							"include": "#ignored"
+						}
+					]
+				},
+				{
+					"begin": "\\{",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.brackets.square.begin"
+						}
+					},
+					"end": "(?=\\})",
+					"patterns": [
+						{
+							"include": "#curly-brackets/body"
+						}
+					]
+				}
+			]
+		},
+		"statement/if": {
+			"begin": "(?=\\\\if[\\\\: \t\r\n#,;\"\\(\\)\\[\\]\\{\\}])",
+			"end": "\\}",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.brackets.curly.end"
+				}
+			},
+			"patterns": [
+				{
+					"begin": "(?=\\\\if)",
+					"end": "(?=[\r\n#,])",
+					"patterns": [
+						{
+							"begin": "\\\\if",
+							"beginCaptures": {
+								"0": {
+									"name": "keyword.control"
+								}
+							},
+							"end": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+							"patterns": [
+								{
+									"include": "#ignored"
+								}
+							]
+						},
+						{
+							"begin": "(?=[^\\\\: \t\r\n#,;\\)\\]\\}])",
+							"end": "(?=[\r\n#,])",
+							"patterns": [
+								{
+									"include": "#expression/term"
+								},
+								{
+									"include": "#ignored"
+								}
+							]
+						}
+					]
+				},
+				{
+					"begin": "(?=[\r\n#,])",
+					"end": "(?=\\{)",
+					"patterns": [
+						{
+							"include": "#separator"
+						},
+						{
+							"include": "#ignored"
+						}
+					]
+				},
+				{
+					"begin": "\\{",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.brackets.square.begin"
+						}
+					},
+					"end": "(?=\\})",
+					"patterns": [
+						{
+							"include": "#curly-brackets/body"
+						}
+					]
+				}
+			]
+		}
+	}
+}

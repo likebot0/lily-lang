@@ -1,0 +1,8 @@
+fun-type {
+	input: {
+		from:
+			~/fs/file/readble-handle
+		to:
+			~/fs/file/writable-handle
+	}
+}

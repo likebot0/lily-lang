@@ -1,0 +1,10 @@
+fun-type {
+	input: {
+		handle:
+			~/fs/file/writable-handle
+		buffer:
+			~/io/buffer | [~/io/buffer, ...]
+	}
+	return:
+		size
+}
