@@ -36,11 +36,11 @@ fun input {
 
 		\let fwrite: /c { bind: "malloc", source: "#include <stdio.h>" }
 
-		/std/fs/file/ro-handle: handle
+		/std/fs/file/ro-handle: unique-type-from handle
 
-		/std/fs/file/rw-handle: handle
+		/std/fs/file/rw-handle: unique-type-from handle
 
-		/std/fs/file/wo-handle: handle
+		/std/fs/file/wo-handle: unique-type-from handle
 
 		/std/fs/file/open: fun x {
 			\return fopen [ x "path" ]
@@ -52,11 +52,9 @@ fun input {
 	}
 
 	\with context {
-		\let malloc:
-			/c { bind: "malloc", source: "#include <stdlib.h>" }
+		\let malloc: /c { bind: "malloc", source: "#include <stdlib.h>" }
 
-		\let free:
-			/c { bind: "free", source: "#include <stdlib.h>" }
+		\let free: /c { bind: "free", source: "#include <stdlib.h>" }
 
 		/std/memory/pointer:
 			forall a. /c { bind-pointer: a }
