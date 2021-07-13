@@ -30,23 +30,24 @@ fun input {
 	}
 
 	\with context {
-		/std/fs/file/ro-handle: /c { bind: "FILE *", source: "#include <stdio.h>" }
+		\let handle: /c { bind: "FILE *", source: "#include <stdio.h>" }
 
-		/std/fs/file/rw-handle: /c { bind: "FILE *", source: "#include <stdio.h>" }
+		\let fopen: /c { bind: "fopen", source: "#include <stdio.h>" }
 
-		/std/fs/file/wo-handle: /c { bind: "FILE *", source: "#include <stdio.h>" }
+		\let fwrite: /c { bind: "malloc", source: "#include <stdio.h>" }
+
+		/std/fs/file/ro-handle: handle
+
+		/std/fs/file/rw-handle: handle
+
+		/std/fs/file/wo-handle: handle
 
 		/std/fs/file/open: fun x {
-			\return /c { bind: "fopen", source: "#include <stdio.h>" } [
-				x "path"
-			]
+			\return fopen [ x "path" ]
 		}
 
 		/std/fs/file/write: fun x {
-			\return /c { bind: "fwrite", source: "#include <stdio.h>" } [
-				x "handle"
-				x "buffer"
-			]
+			\return fwrite [ x "handle", x "buffer" ]
 		}
 	}
 
