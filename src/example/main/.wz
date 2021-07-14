@@ -34,13 +34,13 @@ fun input {
 
 		\let fopen: /c { bind: "fopen", source: "#include <stdio.h>" }
 
-		\let fwrite: /c { bind: "malloc", source: "#include <stdio.h>" }
+		\let fwrite: /c { bind: "fwrite", source: "#include <stdio.h>" }
 
-		/std/fs/file/ro-handle: unique-type-from handle
+		/std/fs/file/ro-handle: handle
 
-		/std/fs/file/rw-handle: unique-type-from handle
+		/std/fs/file/rw-handle: handle
 
-		/std/fs/file/wo-handle: unique-type-from handle
+		/std/fs/file/wo-handle: handle
 
 		/std/fs/file/open: fun x {
 			\return fopen [ x "path" ]
